@@ -43,7 +43,7 @@ export default function BlogPostPage() {
     : [];
 
   return (
-    <div className="min-h-screen px-6 md:px-16 lg:px-24 py-20">
+    <div className="min-h-screen py-20">
       <div className="max-w-3xl">
         <Link to="/blog" className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground mb-8 transition-colors">
           <ArrowLeft size={16} /> Back to blog

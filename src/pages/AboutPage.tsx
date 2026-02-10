@@ -30,7 +30,7 @@ const skillCategories = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen px-6 md:px-16 lg:px-24 py-20">
+    <div className="min-h-screen py-20">
       <div className="max-w-4xl">
         <h1 className="text-3xl md:text-5xl font-bold mb-4 animate-fade-in-up">
           About <span className="gradient-text">Me</span>

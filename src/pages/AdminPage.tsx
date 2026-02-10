@@ -117,7 +117,7 @@ export default function AdminPage() {
   const showForm = creating || editing;
 
   return (
-    <div className="min-h-screen px-6 md:px-16 lg:px-24 py-20">
+    <div className="min-h-screen py-20">
       <div className="max-w-4xl">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold">

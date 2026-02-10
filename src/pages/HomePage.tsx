@@ -7,7 +7,7 @@ const skills = [
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen flex flex-col justify-center px-6 md:px-16 lg:px-24 py-20">
+    <div className="min-h-screen flex flex-col justify-center py-20">
       <div className="max-w-3xl animate-fade-in-up">
         <div className="flex items-center gap-3 mb-4">
           <div className="h-3 w-3 rounded-full bg-success animate-pulse-glow" />
