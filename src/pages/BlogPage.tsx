@@ -42,33 +42,42 @@ export default function BlogPage() {
               <Link
                 key={post.id}
                 to={`/blog/${post.slug}`}
-                className="block glass rounded-xl p-6 hover-lift transition-all"
+                className="block glass rounded-xl overflow-hidden hover-lift transition-all"
               >
-                <h2 className="text-xl font-semibold mb-2 hover:text-primary transition-colors">
-                  {post.title}
-                </h2>
-                {post.excerpt && (
-                  <p className="text-muted-foreground mb-4 line-clamp-2">{post.excerpt}</p>
+                {post.cover_image && (
+                  <img
+                    src={post.cover_image}
+                    alt={post.title}
+                    className="w-full h-48 object-cover"
+                  />
                 )}
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <Calendar size={14} />
-                    {new Date(post.created_at).toLocaleDateString()}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Clock size={14} />
-                    {post.read_time || 5} min read
-                  </span>
-                </div>
-                {post.tags && (typeof post.tags === "string" ? JSON.parse(post.tags) : post.tags).length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    {(typeof post.tags === "string" ? JSON.parse(post.tags) : post.tags).map((tag: string) => (
-                      <span key={tag} className="text-xs px-2 py-1 rounded bg-primary/10 text-primary">
-                        {tag}
-                      </span>
-                    ))}
+                <div className="p-6">
+                  <h2 className="text-xl font-semibold mb-2 hover:text-primary transition-colors">
+                    {post.title}
+                  </h2>
+                  {post.excerpt && (
+                    <p className="text-muted-foreground mb-4 line-clamp-2">{post.excerpt}</p>
+                  )}
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Calendar size={14} />
+                      {new Date(post.created_at).toLocaleDateString()}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock size={14} />
+                      {post.read_time || 5} min read
+                    </span>
                   </div>
-                )}
+                  {post.tags && (typeof post.tags === "string" ? JSON.parse(post.tags) : post.tags).length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {(typeof post.tags === "string" ? JSON.parse(post.tags) : post.tags).map((tag: string) => (
+                        <span key={tag} className="text-xs px-2 py-1 rounded bg-primary/10 text-primary">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </Link>
             ))}
           </div>

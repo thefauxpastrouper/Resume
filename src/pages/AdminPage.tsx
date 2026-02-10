@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { blogApi, type BlogPost } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Edit, Trash2, Eye, EyeOff } from "lucide-react";
+import { Plus, Edit, Trash2, Eye, EyeOff, ImageIcon, X } from "lucide-react";
 import { ImageUploader } from "@/components/ImageUploader";
 
 export default function AdminPage() {
@@ -22,6 +22,7 @@ export default function AdminPage() {
   const [tags, setTags] = useState("");
   const [readTime, setReadTime] = useState("5");
   const [published, setPublished] = useState(false);
+  const [coverImage, setCoverImage] = useState<string | null>(null);
 
   const fetchPosts = async () => {
     try {
@@ -39,7 +40,7 @@ export default function AdminPage() {
 
   const resetForm = () => {
     setTitle(""); setSlug(""); setExcerpt(""); setContent("");
-    setTags(""); setReadTime("5"); setPublished(false);
+    setTags(""); setReadTime("5"); setPublished(false); setCoverImage(null);
     setEditing(null); setCreating(false);
   };
 
@@ -56,6 +57,7 @@ export default function AdminPage() {
     setTags(postTags.join(", "));
     setReadTime(String(post.read_time || 5));
     setPublished(!!post.published);
+    setCoverImage(post.cover_image || null);
   };
 
   const handleSave = async () => {
@@ -68,7 +70,7 @@ export default function AdminPage() {
       slug,
       excerpt: excerpt || null,
       content,
-      cover_image: null,
+      cover_image: coverImage || null,
       tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
       read_time: parseInt(readTime) || 5,
       published: published ? 1 : 0,
@@ -155,6 +157,33 @@ export default function AdminPage() {
               onChange={(e) => setExcerpt(e.target.value)}
               className="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             />
+            {/* Thumbnail Upload */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium flex items-center gap-2">
+                <ImageIcon size={16} /> Thumbnail
+              </label>
+              {coverImage ? (
+                <div className="relative inline-block">
+                  <img
+                    src={coverImage}
+                    alt="Thumbnail preview"
+                    className="w-full max-w-md h-48 object-cover rounded-lg border border-border"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setCoverImage(null)}
+                    className="absolute top-2 right-2 p-1 rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
+                    title="Remove thumbnail"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              ) : (
+                <ImageUploader
+                  onUploadComplete={(url) => setCoverImage(url)}
+                />
+              )}
+            </div>
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <label className="text-sm font-medium">Content</label>

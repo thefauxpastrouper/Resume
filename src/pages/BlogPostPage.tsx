@@ -68,6 +68,13 @@ export default function BlogPostPage() {
             ))}
           </div>
         )}
+        {post.cover_image && (
+          <img
+            src={post.cover_image}
+            alt={post.title}
+            className="w-full rounded-xl mb-8 object-cover max-h-96"
+          />
+        )}
         <div className="prose max-w-none whitespace-pre-wrap">
           <ReactMarkdown>{post.content}</ReactMarkdown>
         </div>
