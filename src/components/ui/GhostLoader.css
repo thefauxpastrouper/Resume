@@ -1,0 +1,122 @@
+.ghost-loader-container {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background: transparent; 
+}
+
+.ghost-container {
+    position: relative;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+.ghost {
+    position: relative;
+    width: 200px;
+    height: 180px;
+}
+
+.ghost-body {
+    position: absolute;
+    width: 200px;
+    height: 160px;
+    background: #b5a393;
+    border-radius: 100px 100px 0 0;
+    top: 0;
+    left: 0;
+}
+
+.ghost-tail {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 40px;
+    display: flex;
+}
+
+.tail-wave {
+    flex: 1;
+    height: 40px;
+    background: #b5a393;
+    border-radius: 0 0 50% 50%;
+    animation: wave 1.5s ease-in-out infinite;
+}
+
+.tail-wave:nth-child(2) { animation-delay: 0.15s; }
+.tail-wave:nth-child(3) { animation-delay: 0.3s; }
+.tail-wave:nth-child(4) { animation-delay: 0.45s; }
+
+@keyframes wave {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.eyes {
+    position: absolute;
+    top: 60px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+
+.eye {
+    width: 24px;
+    height: 32px;
+    background: #6b5b6e;
+    border-radius: 50%;
+    animation: blink 4s infinite;
+}
+
+@keyframes blink {
+    0%, 48%, 52%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(0.1); }
+}
+
+.arms {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.arm {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    top: 80px;
+}
+
+.arm-left {
+    left: -30px;
+    background: #b5a393;
+    border-radius: 0 80% 80% 80%;
+    transform-origin: bottom right;
+    animation: armWaveLeft 2s ease-in-out infinite;
+}
+
+.arm-right {
+    right: -30px;
+    background: #b5a393;
+    border-radius: 80% 0 80% 80%;
+    transform-origin: bottom left;
+    animation: armWaveRight 2s ease-in-out infinite;
+}
+
+@keyframes armWaveLeft {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(-15deg); }
+}
+
+@keyframes armWaveRight {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(15deg); }
+}

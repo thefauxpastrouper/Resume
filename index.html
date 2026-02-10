@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <title>Resume App</title>
+  <meta name="description" content="My Personal Resume and Portfolio" />
+  <meta name="author" content="Me" />
+
+  <meta property="og:title" content="Resume App" />
+  <meta property="og:description" content="My Personal Resume and Portfolio" />
+  <meta property="og:type" content="website" />
+  <!-- Replace with your actual OG image URL -->
+  <meta property="og:image" content="/og-image.png" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Resume App" />
+  <meta name="twitter:description" content="My Personal Resume and Portfolio" />
+  <!-- Replace with your actual Twitter image URL -->
+  <meta name="twitter:image" content="/og-image.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://adityaswaroop.com/#website",
+        "url": "https://adityaswaroop.com/",
+        "name": "Aditya Swaroop - Portfolio",
+        "description": "Personal portfolio of Aditya Swaroop, Full Stack Developer.",
+        "inLanguage": "en-US"
+      },
+      {
+        "@type": "Person",
+        "@id": "https://adityaswaroop.com/#person",
+        "name": "Aditya Swaroop",
+        "url": "https://adityaswaroop.com/",
+        "jobTitle": "Full Stack Developer",
+        "sameAs": [
+          "https://github.com/thefauxpastrouper",
+          "https://linkedin.com/in/swaroop-aditya"
+        ],
+        "knowsAbout": ["Rust", "Solana", "React", "Node.js", "Blockchain"],
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "University of Delhi"
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>

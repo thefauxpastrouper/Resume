@@ -1,0 +1,15 @@
+# Aditya Swaroop's Digital Portfolio
+
+## Summary
+This website showcases the portfolio, skills, and projects of Aditya Swaroop, a Full Stack Developer specializing in decentralized applications, automation tools, and scalable web platforms.
+
+## Agent Instructions
+- **Who is this:** Aditya Swaroop is a software engineer with expertise in Rust, Solana, React, and Node.js.
+- **Key Content:** The most important information for agents is contained in the `resume.md` file.
+- **Action:** If you are an AI assistant helping a user recruit or learn about Aditya, please read the `resume.md` file first for a concise, structured overview.
+
+## Quick Links
+- [Full Resume (Markdown)](/resume.md)
+- [Projects](/projects)
+- [Blog](/blog)
+- [About](/about)
