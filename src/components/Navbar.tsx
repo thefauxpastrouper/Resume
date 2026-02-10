@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Home, User, FolderOpen, BookOpen, LogIn, LogOut, Shield, Menu, X } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
+import { Home, User, FolderOpen, BookOpen, LogIn, LogOut, Shield, Menu, X, Sun, Moon, Monitor } from "lucide-react";
 
 const navItems = [
   { path: "/", label: "Home", icon: Home },
@@ -12,8 +13,17 @@ const navItems = [
 
 export default function Navbar() {
   const { user, isAdmin, signOut } = useAuth();
+  const { theme, setTheme } = useTheme();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const cycleTheme = () => {
+    const next = theme === "dark" ? "light" : theme === "light" ? "system" : "dark";
+    setTheme(next);
+  };
+
+  const ThemeIcon = theme === "dark" ? Moon : theme === "light" ? Sun : Monitor;
+  const themeLabel = theme === "dark" ? "Dark" : theme === "light" ? "Light" : "System";
 
   return (
     <>
@@ -49,7 +59,15 @@ export default function Navbar() {
             </Link>
           )}
         </div>
-        <div>
+        <div className="flex flex-col items-center gap-2">
+          <button
+            onClick={cycleTheme}
+            className="flex flex-col items-center gap-1 p-3 w-16 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+            title={`Theme: ${themeLabel}`}
+          >
+            <ThemeIcon size={20} />
+            <span className="text-[10px]">{themeLabel}</span>
+          </button>
           {user ? (
             <button
               onClick={signOut}
@@ -76,9 +94,14 @@ export default function Navbar() {
       {/* Mobile Top Bar */}
       <header className="md:hidden fixed top-0 left-0 right-0 h-14 glass z-50 flex items-center justify-between px-4">
         <Link to="/" className="text-xl font-bold text-gradient">AS</Link>
-        <button onClick={() => setMobileOpen(!mobileOpen)} className="text-foreground p-2">
-          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={cycleTheme} className="text-foreground p-2" title={`Theme: ${themeLabel}`}>
+            <ThemeIcon size={20} />
+          </button>
+          <button onClick={() => setMobileOpen(!mobileOpen)} className="text-foreground p-2">
+            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </header>
 
       {/* Mobile Menu Overlay */}
