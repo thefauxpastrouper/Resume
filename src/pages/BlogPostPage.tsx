@@ -48,7 +48,7 @@ export default function BlogPostPage() {
         <Link to="/blog" className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground mb-8 transition-colors">
           <ArrowLeft size={16} /> Back to blog
         </Link>
-        <h1 className="text-3xl md:text-4xl font-bold mb-4">{post.title}</h1>
+        <h1 className="text-3xl md:text-4xl font-bold mb-4 font-blog-title tracking-wide">{post.title}</h1>
         <div className="flex items-center gap-4 text-sm text-muted-foreground mb-8">
           <span className="flex items-center gap-1">
             <Calendar size={14} />
@@ -75,15 +75,24 @@ export default function BlogPostPage() {
             className="w-full rounded-xl mb-8 object-cover max-h-96"
           />
         )}
-        <div className="prose max-w-none whitespace-pre-wrap dark:prose-invert">
+        <div className="prose max-w-none whitespace-pre-wrap dark:prose-invert font-blog-body">
           <ReactMarkdown
             components={{
+              h1: ({ node, children, ...props }) => (
+                <h1 className="text-3xl font-bold mt-8 mb-4 font-blog-heading" {...props}>
+                  {children}
+                </h1>
+              ),
               h2: ({ node, children, ...props }) => (
-                <h2 className="text-2xl font-bold mt-8 mb-4" {...props}>
+                <h2 className="text-2xl font-bold mt-8 mb-4 font-blog-heading" {...props}>
                   {children}
                 </h2>
               ),
-              // Apply similar style to h3 if desired, but starting with h2 as main sub-header
+              h3: ({ node, children, ...props }) => (
+                <h3 className="text-xl font-bold mt-6 mb-3 font-blog-heading" {...props}>
+                  {children}
+                </h3>
+              ),
             }}
           >
             {post.content}

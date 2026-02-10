@@ -16,6 +16,9 @@ export default {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
+        'blog-title': ['"Bebas Neue"', 'sans-serif'],
+        'blog-heading': ['"Young Serif"', 'serif'],
+        'blog-body': ['Oswald', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
