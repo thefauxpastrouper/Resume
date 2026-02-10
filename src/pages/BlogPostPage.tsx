@@ -44,7 +44,7 @@ export default function BlogPostPage() {
 
   return (
     <div className="min-h-screen py-20">
-      <div className="max-w-3xl">
+      <div className="max-w-3xl center-container px-4">
         <Link to="/blog" className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground mb-8 transition-colors">
           <ArrowLeft size={16} /> Back to blog
         </Link>
@@ -75,8 +75,19 @@ export default function BlogPostPage() {
             className="w-full rounded-xl mb-8 object-cover max-h-96"
           />
         )}
-        <div className="prose max-w-none whitespace-pre-wrap">
-          <ReactMarkdown>{post.content}</ReactMarkdown>
+        <div className="prose max-w-none whitespace-pre-wrap dark:prose-invert">
+          <ReactMarkdown
+            components={{
+              h2: ({ node, children, ...props }) => (
+                <h2 className="text-2xl font-bold mt-8 mb-4" {...props}>
+                  {children}
+                </h2>
+              ),
+              // Apply similar style to h3 if desired, but starting with h2 as main sub-header
+            }}
+          >
+            {post.content}
+          </ReactMarkdown>
         </div>
 
         <CommentsSection postId={post.id} />
