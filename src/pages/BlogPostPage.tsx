@@ -1,19 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { blogApi, type BlogPost } from "@/lib/api";
 import { ArrowLeft, Clock, Calendar } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { CommentsSection } from "@/components/CommentsSection";
-
-interface BlogPost {
-  id: string;
-  title: string;
-  content: string;
-  excerpt: string | null;
-  tags: string[] | null;
-  read_time: number | null;
-  created_at: string;
-}
 
 export default function BlogPostPage() {
   const { slug } = useParams();
@@ -22,14 +12,13 @@ export default function BlogPostPage() {
 
   useEffect(() => {
     if (!slug) return;
-    supabase
-      .from("blog_posts")
-      .select("*")
-      .eq("slug", slug)
-      .eq("published", true)
-      .maybeSingle()
-      .then(({ data }) => {
-        setPost(data as BlogPost | null);
+    blogApi.get(slug)
+      .then((data) => {
+        setPost(data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setPost(null);
         setLoading(false);
       });
   }, [slug]);
@@ -49,6 +38,10 @@ export default function BlogPostPage() {
     </div>
   );
 
+  const tags = post.tags
+    ? (typeof post.tags === "string" ? JSON.parse(post.tags) : post.tags)
+    : [];
+
   return (
     <div className="min-h-screen px-6 md:px-16 lg:px-24 py-20">
       <div className="max-w-3xl">
@@ -66,9 +59,9 @@ export default function BlogPostPage() {
             {post.read_time || 5} min read
           </span>
         </div>
-        {post.tags && post.tags.length > 0 && (
+        {tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-8">
-            {post.tags.map((tag) => (
+            {tags.map((tag: string) => (
               <span key={tag} className="text-xs px-2 py-1 rounded bg-primary/10 text-primary">
                 {tag}
               </span>

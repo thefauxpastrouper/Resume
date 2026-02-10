@@ -1,0 +1,49 @@
+import { betterAuth } from "better-auth";
+import { Kysely } from "kysely";
+import { D1Dialect } from "kysely-d1";
+
+interface Env {
+    DB: D1Database;
+    GITHUB_CLIENT_ID?: string;
+    GITHUB_CLIENT_SECRET?: string;
+    GOOGLE_CLIENT_ID?: string;
+    GOOGLE_CLIENT_SECRET?: string;
+    BETTER_AUTH_SECRET?: string;
+}
+
+export const onRequest: PagesFunction<Env> = async (context) => {
+    const db = new Kysely<any>({
+        dialect: new D1Dialect({ database: context.env.DB }),
+    });
+
+    const auth = betterAuth({
+        database: {
+            db,
+            type: "sqlite",
+        },
+        secret: context.env.BETTER_AUTH_SECRET || "dev-secret-change-me",
+        emailAndPassword: {
+            enabled: true,
+        },
+        socialProviders: {
+            ...(context.env.GITHUB_CLIENT_ID && context.env.GITHUB_CLIENT_SECRET
+                ? {
+                    github: {
+                        clientId: context.env.GITHUB_CLIENT_ID,
+                        clientSecret: context.env.GITHUB_CLIENT_SECRET,
+                    },
+                }
+                : {}),
+            ...(context.env.GOOGLE_CLIENT_ID && context.env.GOOGLE_CLIENT_SECRET
+                ? {
+                    google: {
+                        clientId: context.env.GOOGLE_CLIENT_ID,
+                        clientSecret: context.env.GOOGLE_CLIENT_SECRET,
+                    },
+                }
+                : {}),
+        },
+    });
+
+    return auth.handler(context.request);
+};

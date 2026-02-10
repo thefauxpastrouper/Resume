@@ -1,34 +1,19 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { blogApi, type BlogPost } from "@/lib/api";
 import { Clock, Calendar } from "lucide-react";
-
-interface BlogPost {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string | null;
-  cover_image: string | null;
-  tags: string[] | null;
-  read_time: number | null;
-  created_at: string;
-  published: boolean | null;
-}
 
 export default function BlogPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase
-      .from("blog_posts")
-      .select("id, title, slug, excerpt, cover_image, tags, read_time, created_at, published")
-      .eq("published", true)
-      .order("created_at", { ascending: false })
-      .then(({ data }) => {
-        setPosts((data as BlogPost[]) || []);
+    blogApi.list(true)
+      .then((data) => {
+        setPosts(data || []);
         setLoading(false);
-      });
+      })
+      .catch(() => setLoading(false));
   }, []);
 
   return (
@@ -75,9 +60,9 @@ export default function BlogPage() {
                     {post.read_time || 5} min read
                   </span>
                 </div>
-                {post.tags && post.tags.length > 0 && (
+                {post.tags && (typeof post.tags === "string" ? JSON.parse(post.tags) : post.tags).length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-3">
-                    {post.tags.map((tag) => (
+                    {(typeof post.tags === "string" ? JSON.parse(post.tags) : post.tags).map((tag: string) => (
                       <span key={tag} className="text-xs px-2 py-1 rounded bg-primary/10 text-primary">
                         {tag}
                       </span>

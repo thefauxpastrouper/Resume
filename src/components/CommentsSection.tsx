@@ -1,20 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
+import { commentsApi, type Comment } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { MessageSquare, Trash2 } from "lucide-react";
-
-interface Comment {
-    id: string;
-    content: string;
-    created_at: string;
-    user_id: string;
-    profiles: {
-        display_name: string | null;
-        avatar_url: string | null;
-    } | null;
-}
 
 interface CommentsSectionProps {
     postId: string;
@@ -30,23 +19,8 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
 
     const fetchComments = async () => {
         try {
-            const { data, error } = await supabase
-                .from("comments" as any)
-                .select(`
-          id,
-          content,
-          created_at,
-          user_id,
-          profiles:user_id (
-            display_name,
-            avatar_url
-          )
-        `)
-                .eq("post_id", postId)
-                .order("created_at", { ascending: true });
-
-            if (error) throw error;
-            setComments(data as unknown as Comment[]);
+            const data = await commentsApi.list(postId);
+            setComments(data);
         } catch (error: any) {
             console.error("Error fetching comments:", error.message);
         } finally {
@@ -56,18 +30,6 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
 
     useEffect(() => {
         fetchComments();
-
-        // Optional: Real-time subscription could go here
-        const channel = supabase
-            .channel('public:comments')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'comments', filter: `post_id=eq.${postId}` }, () => {
-                fetchComments();
-            })
-            .subscribe();
-
-        return () => {
-            supabase.removeChannel(channel);
-        };
     }, [postId]);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -76,21 +38,21 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
 
         setSubmitting(true);
         try {
-            const { error } = await supabase
-                .from("comments")
-                .insert({
-                    content: newComment.trim(),
-                    post_id: postId,
-                    user_id: user.id
-                });
-
-            if (error) throw error;
+            await commentsApi.create({
+                content: newComment.trim(),
+                post_id: postId,
+            });
 
             setNewComment("");
             toast({ title: "Comment posted!" });
             fetchComments();
         } catch (error: any) {
-            toast({ title: "Error posting comment", description: error.message, variant: "destructive" });
+            console.error("Error posting comment:", error);
+            toast({
+                title: "Error posting comment",
+                description: error.message || "Something went wrong. Please try again.",
+                variant: "destructive"
+            });
         } finally {
             setSubmitting(false);
         }
@@ -99,12 +61,7 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
     const handleDelete = async (commentId: string) => {
         if (!confirm("Are you sure you want to delete this comment?")) return;
         try {
-            const { error } = await supabase
-                .from("comments")
-                .delete()
-                .eq("id", commentId);
-
-            if (error) throw error;
+            await commentsApi.delete(commentId);
             toast({ title: "Comment deleted" });
             fetchComments();
         } catch (error: any) {
@@ -129,10 +86,10 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
                             <div className="flex justify-between items-start mb-2">
                                 <div className="flex items-center gap-2">
                                     <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xs">
-                                        {comment.profiles?.display_name?.charAt(0).toUpperCase() || "U"}
+                                        {comment.user_name?.charAt(0).toUpperCase() || "U"}
                                     </div>
                                     <div>
-                                        <span className="font-medium text-sm block">{comment.profiles?.display_name || "User"}</span>
+                                        <span className="font-medium text-sm block">{comment.user_name || "User"}</span>
                                         <span className="text-xs text-muted-foreground">{new Date(comment.created_at).toLocaleDateString()}</span>
                                     </div>
                                 </div>

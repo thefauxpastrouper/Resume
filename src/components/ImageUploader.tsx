@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { Upload, X, Loader2 } from "lucide-react";
+import { Upload, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface ImageUploaderProps {
@@ -20,22 +19,23 @@ export function ImageUploader({ onUploadComplete }: ImageUploaderProps) {
             }
 
             const file = event.target.files[0];
-            const fileExt = file.name.split(".").pop();
-            const fileName = `${Math.random()}.${fileExt}`;
-            const filePath = `${fileName}`;
+            const formData = new FormData();
+            formData.append("file", file);
 
-            const { error: uploadError } = await supabase.storage
-                .from("blog-images")
-                .upload(filePath, file);
+            const res = await fetch("/api/upload", {
+                method: "POST",
+                credentials: "include",
+                body: formData,
+            });
 
-            if (uploadError) {
-                throw uploadError;
+            if (!res.ok) {
+                const body = await res.json().catch(() => ({ message: "Upload failed" }));
+                throw new Error(body.message || "Upload failed");
             }
 
-            const { data } = supabase.storage.from("blog-images").getPublicUrl(filePath);
-
-            if (data) {
-                onUploadComplete(data.publicUrl);
+            const data = await res.json();
+            if (data.url) {
+                onUploadComplete(data.url);
                 toast({ title: "Image uploaded successfully" });
             }
         } catch (error: any) {
@@ -46,7 +46,6 @@ export function ImageUploader({ onUploadComplete }: ImageUploaderProps) {
             });
         } finally {
             setUploading(false);
-            // Reset input
             event.target.value = "";
         }
     };
@@ -65,7 +64,7 @@ export function ImageUploader({ onUploadComplete }: ImageUploaderProps) {
                 />
             </label>
             <p className="text-xs text-muted-foreground hidden sm:block">
-                Uploads to 'blog-images' bucket
+                Upload images for blog posts
             </p>
         </div>
     );

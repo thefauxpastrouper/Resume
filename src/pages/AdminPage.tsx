@@ -1,22 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
+import { blogApi, type BlogPost } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Edit, Trash2, Eye, EyeOff } from "lucide-react";
 import { ImageUploader } from "@/components/ImageUploader";
-
-interface BlogPost {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string | null;
-  content: string;
-  tags: string[] | null;
-  read_time: number | null;
-  published: boolean | null;
-  created_at: string;
-}
 
 export default function AdminPage() {
   const { user, isAdmin, isLoading } = useAuth();
@@ -35,14 +23,13 @@ export default function AdminPage() {
   const [readTime, setReadTime] = useState("5");
   const [published, setPublished] = useState(false);
 
-  // Protection handled by ProtectedRoute component
-
   const fetchPosts = async () => {
-    const { data } = await supabase
-      .from("blog_posts")
-      .select("*")
-      .order("created_at", { ascending: false });
-    setPosts((data as BlogPost[]) || []);
+    try {
+      const data = await blogApi.list();
+      setPosts(data || []);
+    } catch (err: any) {
+      console.error("Error fetching posts:", err.message);
+    }
     setLoading(false);
   };
 
@@ -63,9 +50,12 @@ export default function AdminPage() {
     setSlug(post.slug);
     setExcerpt(post.excerpt || "");
     setContent(post.content);
-    setTags(post.tags?.join(", ") || "");
+    const postTags = post.tags
+      ? (typeof post.tags === "string" ? JSON.parse(post.tags) : post.tags)
+      : [];
+    setTags(postTags.join(", "));
     setReadTime(String(post.read_time || 5));
-    setPublished(post.published || false);
+    setPublished(!!post.published);
   };
 
   const handleSave = async () => {
@@ -78,47 +68,46 @@ export default function AdminPage() {
       slug,
       excerpt: excerpt || null,
       content,
+      cover_image: null,
       tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
       read_time: parseInt(readTime) || 5,
-      published,
+      published: published ? 1 : 0,
       author_id: user!.id,
     };
 
-    if (editing) {
-      const { error } = await supabase.from("blog_posts").update(postData).eq("id", editing.id);
-      if (error) {
-        toast({ title: "Error", description: error.message, variant: "destructive" });
-      } else {
+    try {
+      if (editing) {
+        await blogApi.update(editing.id, postData as any);
         toast({ title: "Post updated!" });
-        resetForm();
-        fetchPosts();
-      }
-    } else {
-      const { error } = await supabase.from("blog_posts").insert(postData);
-      if (error) {
-        toast({ title: "Error", description: error.message, variant: "destructive" });
       } else {
+        await blogApi.create(postData as any);
         toast({ title: "Post created!" });
-        resetForm();
-        fetchPosts();
       }
+      resetForm();
+      fetchPosts();
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
     }
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this post?")) return;
-    const { error } = await supabase.from("blog_posts").delete().eq("id", id);
-    if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
-    } else {
+    try {
+      await blogApi.delete(id);
       toast({ title: "Post deleted" });
       fetchPosts();
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
     }
   };
 
   const togglePublish = async (post: BlogPost) => {
-    await supabase.from("blog_posts").update({ published: !post.published }).eq("id", post.id);
-    fetchPosts();
+    try {
+      await blogApi.update(post.id, { published: post.published ? 0 : 1 } as any);
+      fetchPosts();
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    }
   };
 
   if (isLoading || !isAdmin) return null;
