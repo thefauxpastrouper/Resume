@@ -1,8 +1,0 @@
-/*
-  X-Frame-Options: DENY
-  X-Content-Type-Options: nosniff
-  Referrer-Policy: no-referrer
-  X-Permitted-Cross-Domain-Policies: none
-  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
-  Permissions-Policy: geolocation=(), microphone=(), camera=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://*.auth0.com; connect-src 'self' https://*.auth0.com https://www.thefauxpastrouper.online; frame-src 'self' https://*.auth0.com;
