@@ -7,7 +7,15 @@ export const auth = betterAuth({
         provider: "d1",
     }),
     emailAndPassword: {
-        enabled: true
+        enabled: true,
+        requireEmailVerification: true
+    },
+    emailVerification: {
+        sendOnSignUp: true,
+        sendVerificationEmail: async ({ user, url, token }, request) => {
+            console.log(`[Email Verification] Provide this URL to verify ${user.email}: ${url}`);
+            // In a real app, integrate Resend or Nodemailer here
+        }
     },
     socialProviders: {
         github: {
