@@ -39,7 +39,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
                                 "Content-Type": "application/json"
                             },
                             body: JSON.stringify({
-                                from: 'onboarding@resend.dev',
+                                from: 'onboarding@thefauxpastrouper.online',
                                 to: user.email,
                                 subject: 'Verify your email address',
                                 html: `<p>Click <a href="${url}">here</a> to verify your email address.</p>`,
