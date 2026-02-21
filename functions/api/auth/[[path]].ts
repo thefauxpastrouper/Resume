@@ -1,7 +1,6 @@
 import { betterAuth } from "better-auth";
 import { Kysely } from "kysely";
 import { D1Dialect } from "kysely-d1";
-import { Resend } from "resend";
 
 interface Env {
     DB: D1Database;
@@ -32,13 +31,28 @@ export const onRequest: PagesFunction<Env> = async (context) => {
             sendOnSignUp: true,
             sendVerificationEmail: async ({ user, url, token }, request) => {
                 if (context.env.RESEND_API_KEY) {
-                    const resend = new Resend(context.env.RESEND_API_KEY);
-                    await resend.emails.send({
-                        from: 'onboarding@resend.dev',
-                        to: user.email,
-                        subject: 'Verify your email address',
-                        html: `<p>Click <a href="${url}">here</a> to verify your email address.</p>`,
-                    });
+                    try {
+                        const res = await fetch("https://api.resend.com/emails", {
+                            method: "POST",
+                            headers: {
+                                "Authorization": `Bearer ${context.env.RESEND_API_KEY}`,
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                from: 'onboarding@resend.dev',
+                                to: user.email,
+                                subject: 'Verify your email address',
+                                html: `<p>Click <a href="${url}">here</a> to verify your email address.</p>`,
+                            })
+                        });
+
+                        if (!res.ok) {
+                            const errorData = await res.text();
+                            console.error("Resend API failed:", res.status, errorData);
+                        }
+                    } catch (err) {
+                        console.error("Fetch to Resend failed:", err);
+                    }
                 } else {
                     console.log(`[Email Verification] Provide this URL to verify ${user.email}: ${url}`);
                 }

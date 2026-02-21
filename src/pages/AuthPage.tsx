@@ -53,7 +53,7 @@ export default function AuthPage() {
       }
       const { error } = await signUp(data.email, data.password, data.displayName);
       if (error) {
-        if (error.message.includes("rate limit") || error.status === 429) {
+        if (error?.message?.includes("rate limit") || error?.status === 429) {
           toast({
             title: "Too many attempts",
             description: "You've exceeded the rate limit for signups. Please wait a moment or check your Supabase dashboard settings.",
