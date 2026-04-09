@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Github, Linkedin, Mail, Phone, ArrowRight } from "lucide-react";
+import { Github, Linkedin, Mail, ArrowRight } from "lucide-react";
 
 const skills = [
   "Rust", "C++", "JavaScript", "React", "MongoDB", "Express", "Node.js", "Solana", "Python", "Docker"
@@ -63,10 +63,7 @@ export default function HomePage() {
             className="text-muted-foreground hover:text-foreground transition-colors">
             <Mail size={22} />
           </a>
-          <a href="tel:+917739599683"
-            className="text-muted-foreground hover:text-foreground transition-colors">
-            <Phone size={22} />
-          </a>
+
         </div>
       </div>
     </div>
