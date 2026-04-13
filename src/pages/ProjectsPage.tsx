@@ -2,6 +2,20 @@ import { ExternalLink, Github } from "lucide-react";
 
 const projects = [
   {
+    title: "EquiLedger",
+    description: "Production-grade REST API for authentication, role-based access control, financial record management, and analytics dashboards. Features OpenAPI docs, Zod validation, and rate limiting.",
+    tags: ["TypeScript", "Bun", "Prisma", "Express", "Docker"],
+    highlights: ["JWT auth with RBAC (Admin, Analyst, Viewer)", "CRUD + filtered queries on financial records", "Analytics dashboards scoped per user", "Dockerized deployment with Caddy reverse proxy"],
+    github: "https://github.com/thefauxpastrouper/assignment-zorvyn",
+  },
+  {
+    title: "OfflineSolanaPay",
+    description: "Mobile payment app enabling both online and fully offline Solana transactions. Offline mode uses Durable Nonces and Nearby Connections (Bluetooth/Wi-Fi Direct) for peer-to-peer signed transaction relay.",
+    tags: ["TypeScript", "React Native", "Solana", "Expo"],
+    highlights: ["Offline payments via Durable Nonces", "P2P transaction relay over Nearby Connections", "QR-code-driven merchant–customer flow", "Mobile Wallet Adapter (MWA) integration"],
+    github: "https://github.com/thefauxpastrouper/OfflineSolanaPay",
+  },
+  {
     title: "RestaurantChain",
     description: "A platform to store reviews on Solana blockchain. Restaurant owners create listings and get transparent feedback via on-chain reviews.",
     tags: ["Solana", "Blockchain", "Hetzner Cloud"],
@@ -65,7 +79,13 @@ export default function ProjectsPage() {
             >
               <div className="flex items-start justify-between mb-3">
                 <h3 className="text-lg font-semibold">{project.title}</h3>
-                <Github size={18} className="text-muted-foreground" />
+                {project.github ? (
+                  <a href={project.github} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
+                    <Github size={18} />
+                  </a>
+                ) : (
+                  <Github size={18} className="text-muted-foreground" />
+                )}
               </div>
               <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{project.description}</p>
               <ul className="text-sm text-muted-foreground mb-4 space-y-1">
